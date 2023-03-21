@@ -1,10 +1,9 @@
 ﻿let nickname = "";
 let hue = 0;
 function promptNickname(prompttitle = "Введите имя пользователя:") {
-    // while (nickname.length < 1 || nickname.length > 50) {
-    //     nickname = prompt(prompttitle, "");
-    // }
-    nickname = "lucors";
+    while (nickname.length < 1 || nickname.length > 50) {
+        nickname = prompt(prompttitle, "");
+    }
     nickname = nickname.slice(0, 50);
     hue = nicknameHue(nickname);
 }
