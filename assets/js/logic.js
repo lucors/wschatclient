@@ -1,9 +1,10 @@
 ﻿let nickname = "";
 let hue = 0;
 function promptNickname(prompttitle = "Введите имя пользователя:") {
-    while (nickname.length < 1 || nickname.length > 50) {
-        nickname = prompt(prompttitle, "");
-    }
+    // while (nickname.length < 1 || nickname.length > 50) {
+    //     nickname = prompt(prompttitle, "");
+    // }
+    nickname = "lucors";
     nickname = nickname.slice(0, 50);
     hue = nicknameHue(nickname);
 }
@@ -144,7 +145,7 @@ function wssMessage(event) {
                 chatDelMem(message.data);
                 chatPutMessage("notify", `${message.data} отключился`);
                 break;
-            case "chat-clients":
+            case "CLIENTS":
                 message.data.forEach(client => {
                     chatNewMem(client);
                 });

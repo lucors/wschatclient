@@ -1,4 +1,13 @@
-﻿body {
+﻿@font-face {
+    font-family: Nunito;
+    src: url(../font/Nunito-VariableFont_wght.ttf);
+}
+:root {
+	font-family: Nunito;
+	color: black;
+}
+
+body {
     margin: 0;
     padding: 0;
     width: 100vw;
@@ -13,8 +22,10 @@
     transition-property: top;
     transition-timing-function:  cubic-bezier(0.65, 0, 0.35, 1);
     justify-content: flex-start;
-    color: black;
-    background-color: E6E6E6;
+    background-color: #E6E6E6;
+}
+button {
+    font-family: Nunito !important;
 }
 
 #chat-clients {
@@ -29,7 +40,7 @@
     margin: 0.5em;
     overflow-y: scroll;
     max-height: 10vh;
-    height: 2.5em;
+    height: 3em;
     flex-wrap: wrap;
 }
 #chat-clients .client {
