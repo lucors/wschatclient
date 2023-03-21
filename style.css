@@ -1,0 +1,101 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    flex-direction: column;
+    position: absolute;
+    left: 0;
+    transition-property: top;
+    transition-timing-function:  cubic-bezier(0.65, 0, 0.35, 1);
+    justify-content: flex-start;
+}
+
+#clients {
+    width: 90vw;
+    max-width: 42em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0000000f;
+    border-radius: 0.5em;
+    padding: 0.5em;
+    margin: 0.5em;
+    overflow-y: scroll;
+    max-height: 10vh;
+    height: 2.5em;
+    flex-wrap: wrap;
+}
+#clients .client {
+    border-radius: 0.5em;
+    padding: 0.3em;
+    margin: 0.3em;
+    color: #004c8d;
+    background-color: #5ee5ff61;
+}
+
+#messages {
+    width: 90vw;
+    max-width: 42em;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    flex-direction: column;
+    background-color: #0000000f;
+    border-radius: 0.5em;
+    padding: 0.5em;
+    margin: 0.5em;
+    overflow-y: scroll;
+    max-height: 80vh;
+    height: 48em;
+}
+
+/* #sendform {
+    margin-bottom: 3em;
+} */
+
+.msg {
+    color: black;
+    background-color: #bfbfbf59;
+    margin: 0.5em 0;
+    border-radius: 0.5em;
+    padding: 0.4em 0.5em;
+    align-self: flex-end;
+    width: 40%;
+    word-break: break-all;
+}
+.msg.outer {
+    background-color: #5ee5ff61;
+    align-self: flex-start;
+}
+.msg .msgtitle {
+    display: flex;
+    justify-content: space-between;
+}
+.msg .msgwho {
+    color: #004c8d;
+    max-width: 15em;
+}
+.msg .msgtime {
+    color: #8080809e;
+    display: flex;
+}
+
+.msg.notify {
+    align-self: center;
+    display: flex;
+    justify-content: center;
+    width: 55%;
+}
+.msg.notify .msgwho {
+    margin-right: 0.5em;
+}
+.msg.notify .msgtext {
+    color: gray;
+    display: flex;
+}
