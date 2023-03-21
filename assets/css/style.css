@@ -7,16 +7,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: black;
     flex-direction: column;
     position: absolute;
     left: 0;
     transition-property: top;
     transition-timing-function:  cubic-bezier(0.65, 0, 0.35, 1);
     justify-content: flex-start;
+    color: black;
+    background-color: E6E6E6;
 }
 
-#clients {
+#chat-clients {
     width: 90vw;
     max-width: 42em;
     display: flex;
@@ -31,7 +32,7 @@
     height: 2.5em;
     flex-wrap: wrap;
 }
-#clients .client {
+#chat-clients .client {
     border-radius: 0.5em;
     padding: 0.3em;
     margin: 0.3em;
@@ -39,7 +40,7 @@
     background-color: #5ee5ff61;
 }
 
-#messages {
+#chat-messages {
     width: 90vw;
     max-width: 42em;
     display: flex;
@@ -55,7 +56,7 @@
     height: 48em;
 }
 
-/* #sendform {
+/* #chat-send-form {
     margin-bottom: 3em;
 } */
 

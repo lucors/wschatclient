@@ -43,7 +43,7 @@ function chatNewMem(who) {
     elem.className = "client";
     elem.innerHTML = who;
     elem.style = `filter: hue-rotate(${nicknameHue(who)}deg);`;
-    document.getElementById('clients').append(elem);
+    document.getElementById('chat-clients').append(elem);
 }
 function chatDelMem(who) {
     document
@@ -79,17 +79,17 @@ function chatPutMessage(type, msgtext, msgwho = "") {
         elem.innerHTML += msgtitle;
     }
     elem.innerHTML += `<div class="msgtext">${msgtext}</div>`;
-    document.getElementById('messages').append(elem);
-    scrollToBottom("messages");
+    document.getElementById('chat-messages').append(elem);
+    scrollToBottom("chat-messages");
 }
 function setOnlineCounter(count = "") {
     if (count === "") {
-        document.getElementById('counter-title').innerHTML = "Офлайн";
-        document.getElementById('counter').innerHTML = "";
+        document.getElementById('chat-clients-count-title').innerHTML = "Офлайн";
+        document.getElementById('chat-clients-count').innerHTML = "";
     }
     else {
-        document.getElementById('counter-title').innerHTML = "Онлайн:";
-        document.getElementById('counter').innerHTML = count;
+        document.getElementById('chat-clients-count-title').innerHTML = "Онлайн:";
+        document.getElementById('chat-clients-count').innerHTML = count;
     }
 }
 
@@ -144,7 +144,7 @@ function wssMessage(event) {
                 chatDelMem(message.data);
                 chatPutMessage("notify", `${message.data} отключился`);
                 break;
-            case "CLIENTS":
+            case "chat-clients":
                 message.data.forEach(client => {
                     chatNewMem(client);
                 });
@@ -172,7 +172,7 @@ function wssMessage(event) {
 //-------WEBSOCKET OUTGOING HANDLERS-------
 function wssSendMessage() {
     if (nickname === "") return;
-    let message = document.getElementById('msginput').value.slice(0, 2000);
+    let message = document.getElementById('chat-input').value.slice(0, 2000);
     if (message === "") {
         console.warn("Не отправляйте пустые сообщения");
         return false;
@@ -185,7 +185,7 @@ function wssSendMessage() {
                 msg: message
             }
         }))
-    document.getElementById('msginput').value = "";
+    document.getElementById('chat-input').value = "";
     return true;
 }
 
@@ -200,7 +200,7 @@ socket.onerror = wssError;
 socket.onmessage = wssMessage;
 
 //Отправка сообщения
-document.getElementById('msgsend').onclick = wssSendMessage;
+document.getElementById('chat-send').onclick = wssSendMessage;
 document.querySelector('input').addEventListener('keydown', function (e) {
     if (e.key === "Enter") return wssSendMessage();
 });
