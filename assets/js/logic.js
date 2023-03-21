@@ -108,7 +108,6 @@ function wssClose(event) {
     console.log("Соединение закрыто");
     chatPutMessage("notify", "Соединение закрыто");
     setOnlineCounter();
-    // socket.send("");
 }
 function wssError(event) {
     console.error("Ошибка WebSocket");
@@ -181,7 +180,6 @@ function wssSendMessage() {
         .send(JSON.stringify({
             type: "MSG",
             data: {
-                who: nickname,
                 msg: message
             }
         }))
@@ -191,7 +189,6 @@ function wssSendMessage() {
 
 
 // let socket = new WebSocket("wss://lucors.ru/wschatserver/");
-// ws://localhost:9000
 let socket = new WebSocket("ws://127.0.0.1:9000");
 //Обработчики сокета
 socket.onopen = wssOpen;

@@ -5,6 +5,7 @@
 :root {
 	font-family: Nunito;
 	color: black;
+    filter: invert(1);
 }
 
 body {
@@ -96,6 +97,7 @@ button {
 .msg .msgtime {
     color: #8080809e;
     display: flex;
+    font-size: 0.85em;
 }
 
 .msg.notify {
