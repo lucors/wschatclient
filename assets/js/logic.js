@@ -14,20 +14,11 @@ let stages = {
 }
 
 
-function promptNickname(prompttitle = "Введите имя пользователя:") {
-    while (nickname.length < 1 || nickname.length > 50) {
-        nickname = prompt(prompttitle, "");
-    }
-    nickname = nickname.slice(0, 50);
-    hue = nicknameHue(nickname);
-    document.getElementById("chat-send-form").style = `filter: hue-rotate(${hue}deg);`;
-}
+
+//-------COMMON UTILS-------
 function nicknameHue(nick) {
     return (hashCode(nick) + 318) % 360;
 }
-
-
-//-------COMMON UTILS-------
 function hashCode(str) {
     for(var i = 0, hc = 0; i < str.length; i++)
         hc = Math.imul(31, hc) + str.charCodeAt(i) | 0;
@@ -110,6 +101,7 @@ function setOnlineCounter(count = "") {
 //-------WEBSOCKET INCOMING HANDLERS-------
 function wssSendName() {
     nickname = $("#auth-input").val();
+    nickname = nickname.slice(0, 50);
     if (nickname === "") {
         $("#auth-error").html("Введите имя");
         return;
@@ -228,7 +220,8 @@ function setStage(stage) {
 }
 
 stages["auth"]["entry"] = function(){
-    console.log("auth entry ОК");
+    nickname = Cookies.get("wscname") || "";
+    if (nickname) $("#auth-input").val(nickname);
     socket = new WebSocket("wss://lucors.ru/wschatserver/");
     // socket = new WebSocket("ws://127.0.0.1:9000");
     //Обработчики сокета
@@ -236,8 +229,6 @@ stages["auth"]["entry"] = function(){
     socket.onclose = wssClose;
     socket.onerror = wssError;
     socket.onmessage = wssMessage;
-    // promptNickname();
-    
     // Отправка сообщений
     document.getElementById('auth-send').onclick = wssSendName;
     document.getElementById('auth-input').addEventListener('keydown', function (e) {
@@ -249,6 +240,9 @@ stages["auth"]["exit"] = function(){
     console.log("auth exit ОК");
 }
 stages["chat"]["entry"] = function(){
+    Cookies.set("wscname", nickname);
+    hue = nicknameHue(nickname);
+    document.getElementById("chat-send-form").style = `filter: hue-rotate(${hue}deg);`;
     // Отправка сообщений
     document.getElementById('chat-send').onclick = wssSendMessage;
     document.getElementById('chat-input').addEventListener('keydown', function (e) {

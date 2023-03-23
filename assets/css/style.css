@@ -152,7 +152,9 @@ body.auth #auth-wrapper {
 
 /* CHAT */
 body.chat #chat-wrapper {
-    display: initial;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 #chat-wrapper {
     width: var(--sz-chat-wrapper-w);
@@ -165,7 +167,7 @@ body.chat #chat-wrapper {
     max-height: 10vh;
     overflow-y: scroll;
     flex-wrap: wrap;
-    height: 3em;
+    height: 3.3em;
     max-height: 5vh;
 }
 #chat-clients .client {
@@ -250,6 +252,7 @@ body.chat #chat-wrapper {
     position: relative;
     width: calc(100% - var(--sz-chat-send-form-h)*2.5);
     padding: 0 var(--spec-1);
+    height: var(--sz-chat-send-form-h);
 }
 #chat-send {
     position: absolute;
