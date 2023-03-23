@@ -1,16 +1,30 @@
 ﻿let nickname = "";
 let hue = 0;
+let socket = null;
+let currentStage = null;
+let stages = {
+    "auth": {
+        entry: null,
+        exit: null,
+    },
+    "chat": {
+        entry: null,
+        exit: null,
+    },
+}
+
+
 function promptNickname(prompttitle = "Введите имя пользователя:") {
     while (nickname.length < 1 || nickname.length > 50) {
         nickname = prompt(prompttitle, "");
     }
     nickname = nickname.slice(0, 50);
     hue = nicknameHue(nickname);
+    document.getElementById("chat-send-form").style = `filter: hue-rotate(${hue}deg);`;
 }
 function nicknameHue(nick) {
     return (hashCode(nick) + 318) % 360;
 }
-promptNickname();
 
 
 //-------COMMON UTILS-------
@@ -94,8 +108,12 @@ function setOnlineCounter(count = "") {
 }
 
 //-------WEBSOCKET INCOMING HANDLERS-------
-function wssOpen() {
-    if (nickname === "") return;
+function wssSendName() {
+    nickname = $("#auth-input").val();
+    if (nickname === "") {
+        $("#auth-error").html("Введите имя");
+        return;
+    };
     socket
         .send(JSON.stringify({
             type: "NEWMEM",
@@ -104,6 +122,7 @@ function wssOpen() {
             }
         }))
 }
+function wssOpen() {}
 function wssClose(event) {
     console.log("Соединение закрыто");
     chatPutMessage("notify", "Соединение закрыто");
@@ -151,11 +170,13 @@ function wssMessage(event) {
             case "COUNT":
                 setOnlineCounter(message.data);
                 break;
-            case "CHANGE_NICK":
-                console.error(`CHANGE_NICK: ${message.data}`);
+            case "NEWMEM_OK":
+                setStage("chat"); 
+                break;
+            case "NEWMEM_CHANGE_NICK":
+                console.error(`NEWMEM_CHANGE_NICK: ${message.data}`);
                 nickname = "";
-                promptNickname("Имя занято. Введите другое имя:");
-                wssOpen();
+                $("#auth-error").html("Имя занято. Введите другое имя");
                 break;
             case "ERROR":
                 console.error(`SERVER ERROR: ${message.data}`);
@@ -188,17 +209,59 @@ function wssSendMessage() {
 }
 
 
-// let socket = new WebSocket("wss://lucors.ru/wschatserver/");
-let socket = new WebSocket("ws://127.0.0.1:9000");
-//Обработчики сокета
-socket.onopen = wssOpen;
-socket.onclose = wssClose;
-socket.onerror = wssError;
-socket.onmessage = wssMessage;
 
-//Отправка сообщения
-document.getElementById('chat-send').onclick = wssSendMessage;
-document.querySelector('input').addEventListener('keydown', function (e) {
-    if (e.key === "Enter") return wssSendMessage();
+
+// Обработка этапов
+function setStage(stage) {
+    if (!(stage in stages)) return;
+    if (currentStage) {
+        console.log(`Завершение этапа: ${currentStage}`);
+        stages[currentStage]["exit"]();
+    }
+    console.log(`Начало этапа: ${stage}`);
+    currentStage = stage;
+    $(document.body)
+        .removeClass(Object.keys(stages).join(" "))
+        .addClass(stage);
+    stages[stage]["entry"]();
+}
+
+stages["auth"]["entry"] = function(){
+    console.log("auth entry ОК");
+    socket = new WebSocket("wss://lucors.ru/wschatserver/");
+    // socket = new WebSocket("ws://127.0.0.1:9000");
+    //Обработчики сокета
+    socket.onopen = wssOpen;
+    socket.onclose = wssClose;
+    socket.onerror = wssError;
+    socket.onmessage = wssMessage;
+    // promptNickname();
+    
+    // Отправка сообщений
+    document.getElementById('auth-send').onclick = wssSendName;
+    document.getElementById('auth-input').addEventListener('keydown', function (e) {
+        if (e.key === "Enter") return wssSendName();
+    });
+}
+stages["auth"]["exit"] = function(){
+    $("#auth-error").html("");
+    console.log("auth exit ОК");
+}
+stages["chat"]["entry"] = function(){
+    // Отправка сообщений
+    document.getElementById('chat-send').onclick = wssSendMessage;
+    document.getElementById('chat-input').addEventListener('keydown', function (e) {
+        if (e.key === "Enter") return wssSendMessage();
+    });
+}
+stages["chat"]["exit"] = function(){
+    console.log("chat exit ОК");
+}
+
+
+//-------------------------------------------------------------------------------------------------------
+// DOCUMENT READY EVENT
+//-------------------------------------------------------------------------------------------------------
+$(document).ready(function(){
+    setStage("auth");
 });
-

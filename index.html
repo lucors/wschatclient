@@ -16,19 +16,34 @@
     </head>
 
     <body>
-        <!-- Chat clients data -->
-        <div id="chat-clients"></div>
-        <div id="chat-clients-count-wrapper">
-            <span id="chat-clients-count-title">Офлайн</span> <span id="chat-clients-count"></span>
+        <div id="auth-wrapper">
+            <img id="wsc-logo" src="assets/img/wsclogo.svg">
+            <!-- Nickname Sending Form -->
+            <div id="auth-send-form" class="chat-style">
+                <input id="auth-input" type="text" name="message" maxlength="50" placeholder="Имя пользователя">
+                <div id="auth-send" class="flex-center">
+                    <img src="assets/img/chat-send.svg">
+                </div>
+            </div>
+            <di id="auth-error"></div>
         </div>
+        <div id="chat-wrapper">
+            <!-- Chat clients data -->
+            <div id="chat-clients" class="flex-center chat-style"></div>
+            <div id="chat-clients-count-wrapper" class="flex-center">
+                <span id="chat-clients-count-title">Офлайн</span> <span id="chat-clients-count"></span>
+            </div>
 
-        <!-- Chat msg List -->
-        <div id="chat-messages"></div>
+            <!-- Chat msg List -->
+            <div id="chat-messages" class="chat-style"></div>
 
-        <!-- Chat msg Sending Form -->
-        <div id="chat-send-form">
-            <input id="chat-input" type="text" name="message">
-            <button id="chat-send" type="button">Отправить</button>
+            <!-- Chat msg Sending Form -->
+            <div id="chat-send-form" class="chat-style">
+                <input id="chat-input" type="text" name="message" maxlength="2000">
+                <div id="chat-send" class="flex-center">
+                    <img src="assets/img/chat-send.svg">
+                </div>
+            </div>
         </div>
     </body>
 </html>
