@@ -129,6 +129,7 @@ function wssClose(event) {
     setOnlineCounter();
 }
 function wssError(event) {
+    $("#auth-error").html("Ошибка соединения");
     console.error("Ошибка WebSocket");
     chatPutMessage("notify", "Ошибка WebSocket");
     socket.close();
