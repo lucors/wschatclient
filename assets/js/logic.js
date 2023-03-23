@@ -231,9 +231,6 @@ stages["auth"]["entry"] = function(){
     socket.onmessage = wssMessage;
     // Отправка сообщений
     document.getElementById('auth-send').onclick = wssSendName;
-    document.getElementById('auth-input').addEventListener('keydown', function (e) {
-        if (e.key === "Enter") return wssSendName();
-    });
     document.body.addEventListener('keydown', function (e) {
         if (!$(document.body).hasClass("auth")) return;
         if (e.key === "Enter") return wssSendName();
