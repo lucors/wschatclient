@@ -202,7 +202,9 @@ function wssSendMessage() {
 }
 
 
-
+window.onbeforeunload = function() {
+    return "Вы уверены что хотите покинуть страницу?";
+};
 
 // Обработка этапов
 function setStage(stage) {
