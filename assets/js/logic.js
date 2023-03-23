@@ -234,10 +234,15 @@ stages["auth"]["entry"] = function(){
     document.getElementById('auth-input').addEventListener('keydown', function (e) {
         if (e.key === "Enter") return wssSendName();
     });
+    document.body.addEventListener('keydown', function (e) {
+        if (!$(document.body).hasClass("auth")) return;
+        if (e.key === "Enter") return wssSendName();
+        document.getElementById('auth-input').focus();
+    });
 }
 stages["auth"]["exit"] = function(){
     $("#auth-error").html("");
-    console.log("auth exit ОК");
+    $(document.body).off("click");
 }
 stages["chat"]["entry"] = function(){
     Cookies.set("wscname", nickname);
