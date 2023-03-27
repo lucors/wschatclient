@@ -2,18 +2,6 @@
 
 
 // CHAT UTILS
-function chatNewMem(who) {
-    const elem = $("<div>");
-    elem.addClass("client")
-        .attr("who", who)
-        .html(who)
-        .css({"filter": `hue-rotate(${nicknameHue(who)}deg)`});
-    $("#chat-clients").append(elem);
-}
-function chatDelMem(who) {
-    $(`.client[who="${who}"]`)
-        .each((i, elem) => elem.remove());
-}
 function chatPutMessage(type, msgtext, msgwho = "") {
     const elem = $("<div>");
     elem
@@ -48,16 +36,6 @@ function chatPutMessage(type, msgtext, msgwho = "") {
     $("#chat-messages").append(elem);
     scrollToBottom("#chat-messages");
 }
-function chatSetOnlineCounter(count = "") {
-    if (count === "") {
-        $("#chat-clients-count-title").html("Офлайн");
-        $("#chat-clients-count").html("");
-    }
-    else {
-        $("#chat-clients-count-title").html("Онлайн:");
-        $("#chat-clients-count").html(count);
-    }
-}
 
 
 // CHAT WEBSOCKET STUFF
@@ -73,42 +51,7 @@ function wssSendMessage() {
     return true;
 }
 
-// Common wssMessage Handlers
-wssMessageHandlers.push({
-    mode: "COUNT",
-    func: function(message){
-        chatSetOnlineCounter(message[1]);
-    }
-});
-wssMessageHandlers.push({
-    mode: "CLIENTS",
-    func: function(message){
-        message[1].forEach(client => {
-            chatNewMem(client);
-        });
-    }
-});
-wssMessageHandlers.push({
-    mode: "DELMEM",
-    func: function(message){
-        chatDelMem(message[1]);
-        chatPutMessage("notify", `${message[1]} отключился`);
-    }
-});
-wssMessageHandlers.push({
-    mode: "NEWMEM",
-    func: function(message){
-        const newMemMsg = `
-        <div 
-        class="msgwho" 
-        style="filter: hue-rotate(${nicknameHue(message[1])}deg);"
-        >
-        ${message[1]}</div> подключился
-        `; 
-        chatNewMem(message[1]);
-        chatPutMessage("notify", newMemMsg);
-    }
-});
+// CHAT wssMessage HANDLERS
 wssMessageHandlers.push({
     mode: "NOTIFY",
     func: function(message){
@@ -125,19 +68,22 @@ wssMessageHandlers.push({
 });
 
 
-
-// CHAT Stage Handler
+// CHAT STAGE HANDLERS
 stages["chat"]["entry"] = function(){
     Cookies.set("wscname", nickname);
     hue = nicknameHue(nickname);
-    $("#chat-send-form").css({"filter": `hue-rotate(${hue}deg)`})
+    $("#chat-send-form, #chat-rooms")
+        .css({"filter": `hue-rotate(${hue}deg)`});
+        
     // Отправка сообщений
     $("#chat-send").click(wssSendMessage);
     $("#chat-input").on("keydown", function(e) {
         if (e.key === "Enter") return wssSendMessage();
     });
+
+    // Выбор комнаты
+    $("#chat-rooms .room").click(changeRoom);
 }
 stages["chat"]["exit"] = function(){
     if (flags.debug) console.log("chat exit ОК");
 }
-

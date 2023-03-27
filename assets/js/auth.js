@@ -1,10 +1,10 @@
-// CHAT VARIABLES
+// AUTH VARIABLES
 
 
-// CHAT UTILS
+// AUTH UTILS
 
 
-// CHAT WEBSOCKET STUFF
+// AUTH WEBSOCKET STUFF
 function wssSendName() {
     nickname = $("#auth-input").val();
     nickname = nickname.slice(0, 50);
@@ -12,27 +12,27 @@ function wssSendName() {
         $("#auth-error").html("Введите имя");
         return;
     };
-    wssSend("NEWMEM", {who: nickname});
+    wssSend("AUTH", {who: nickname});
 }
 
-// Common wssMessage Handlers
+// AUTH wssMessage HANDLERS
 wssMessageHandlers.push({
-    mode: "NEWMEM_CHANGE_NICK",
+    mode: "AUTH_FAIL",
     func: function(message){
-        console.error(`NEWMEM_CHANGE_NICK: ${message[1]}`);
+        console.error(`AUTH_FAIL: ${message[1]}`);
         nickname = "";
-        $("#auth-error").html("Имя занято. Введите другое имя");
+        $("#auth-error").html(message[1]);
     }
 });
 wssMessageHandlers.push({
-    mode: "NEWMEM_OK",
+    mode: "AUTH_OK",
     func: function(message){
         setStage("chat"); 
     }
 });
 
 
-// AUTH Stage Handler
+// AUTH STAGE HANDLERS
 stages["auth"]["entry"] = function(){
     nickname = Cookies.get("wscname") || "";
     if (nickname) $("#auth-input").val(nickname);

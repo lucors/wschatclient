@@ -1,4 +1,5 @@
-﻿let nickname = "";
+﻿// COMMON VARIABLES
+let nickname = "";
 let hue = 0;
 let socket = null;
 let wssMessageHandlers = []; //[{mode: string, func: function()},...]
@@ -22,11 +23,7 @@ let flags = {
 }
 
 
-
-//-------COMMON UTILS-------
-function nicknameHue(nick) {
-    return (hashCode(nick) + 318) % 360;
-}
+// COMMON UTILS
 function hashCode(str) {
     for(var i = 0, hc = 0; i < str.length; i++)
         hc = Math.imul(31, hc) + str.charCodeAt(i) | 0;
@@ -49,6 +46,31 @@ function currentDatetime() {
     if (seconds.length < 2) seconds = `0${seconds}`;
     return `${hours}:${minutes}:${seconds}`;
 }
+// Обработка этапов
+function setStage(stage) {
+    if (!(stage in stages)) return;
+    if (currentStage) {
+        if (flags.debug) console.log(`Завершение этапа: ${currentStage}`);
+        if (!stages[currentStage]["exit"]) {
+            console.error(`Не описан обязательный обработчик для события exit, этап: ${currentStage}`);
+            return;
+        }
+        stages[currentStage]["exit"]();
+    }
+    if (flags.debug) console.log(`Начало этапа: ${stage}`);
+    currentStage = stage;
+    $(document.body)
+        .removeClass(Object.keys(stages).join(" "))
+        .addClass(stage);
+    if (!stages[stage]["entry"]) {
+        console.error(`Не описан обязательный обработчик для события entry, этап: ${stage}`);
+        return;
+    }
+    stages[stage]["entry"]();
+}
+
+
+// COMMON WEBSOCKET STUFF
 function wssConnect() {
     if (flags.debug){
         socket = new WebSocket("ws://127.0.0.1:9000");
@@ -62,9 +84,6 @@ function wssConnect() {
     socket.onerror = wssError;
     socket.onmessage = wssMessage;
 }
-
-
-//-------WEBSOCKET INCOMING HANDLERS-------
 function wssOpen() {
     $("#auth-send").click(wssSendName);
     $(document.body).on("keydown", function (e) {
@@ -79,7 +98,7 @@ function wssClose(event) {
     }
     console.warn("Соединение закрыто");
     chatPutMessage("notify", "Соединение закрыто");
-    chatSetOnlineCounter();
+    setTotalOnlineCounter();
 }
 function wssError(event) {
     $("#auth-error").html("Ошибка соединения");
@@ -110,37 +129,18 @@ function wssMessage(event) {
 function wssSend(mode, data = undefined) {
     let msg = [mode];
     if (data) msg.push(data);
-    return socket.send(JSON.stringify(msg))
+    if (flags.debug) console.log(`Отправка: ` + JSON.stringify(msg));
+    return socket.send(JSON.stringify(msg));
 }
 
-
-// Обработка этапов
-function setStage(stage) {
-    if (!(stage in stages)) return;
-    if (currentStage) {
-        if (flags.debug) console.log(`Завершение этапа: ${currentStage}`);
-        if (!stages[currentStage]["exit"]) {
-            console.error(`Не описан обязательный обработчик для события exit, этап: ${currentStage}`);
-            return;
-        }
-        stages[currentStage]["exit"]();
-    }
-    if (flags.debug) console.log(`Начало этапа: ${stage}`);
-    currentStage = stage;
-    $(document.body)
-        .removeClass(Object.keys(stages).join(" "))
-        .addClass(stage);
-    if (!stages[stage]["entry"]) {
-        console.error(`Не описан обязательный обработчик для события entry, этап: ${stage}`);
-        return;
-    }
-    stages[stage]["entry"]();
-}
-
-// Common wssMessage Handlers
+// COMMON wssMessage HANDLERS
 wssMessageHandlers.push({
     mode: "ERROR",
     func: function(message){
         console.error(`SERVER ERROR: ${message[1]}`);
     }
 });
+
+
+// COMMON STAGE HANDLERS
+// no stage for COMMON

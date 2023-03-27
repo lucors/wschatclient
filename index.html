@@ -5,17 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content='Online real-time chat built on WebSockets technology'>
         <meta name="keywords" content="websocket socket chat lucors">
+        <link rel="shortcut icon" href="assets/img/favicon.png"/>
+        <link rel="stylesheet" href="assets/css/style.css">
 
-        <!-- JS Libs -->
+        <!-- Libs -->
         <script src="assets/js/lib/jquery.min.js"></script>
         <script src="assets/js/lib/js.cookie.min.js"></script>
 
-        <link rel="shortcut icon" href="assets/img/favicon.png"/>
-        <link rel="stylesheet" href="assets/css/style.css">
-        <script defer src="assets/js/common.js"></script>
-        <script defer src="assets/js/auth.js"></script>
-        <script defer src="assets/js/rooms.js"></script>
-        <script defer src="assets/js/chat.js"></script>
+        <!-- Client logic -->
+        <script src="assets/js/common.js"></script>
+        <script src="assets/js/auth.js"></script>
+        <script src="assets/js/chat.js"></script>
+        <script src="assets/js/mems.js"></script>
+        <script src="assets/js/rooms.js"></script>
         <script defer src="assets/js/run.js"></script>
     </head>
 
@@ -29,23 +31,34 @@
                     <img src="assets/img/chat-send.svg">
                 </div>
             </div>
-            <di id="auth-error"></div>
+            <div id="auth-error"></div>
         </div>
-        <div id="chat-wrapper">
-            <!-- Chat clients data -->
-            <div id="chat-clients" class="flex-center chat-style"></div>
-            <div id="chat-clients-count-wrapper" class="flex-center">
-                <span id="chat-clients-count-title">Офлайн</span> <span id="chat-clients-count"></span>
+        <div id="app-wrapper">
+            <!-- Rooms data -->
+            <div id="rooms-wrapper" class="app-row">
+                <div id="chat-rooms" class="flex-center chat-style"></div>
+                <div id="chat-rooms-error" class="flex-center"></div>
             </div>
 
-            <!-- Chat msg List -->
-            <div id="chat-messages" class="chat-style"></div>
+            <!-- Chat data -->
+            <div id="chat-wrapper" class="app-row">
+                <!-- Chat msg List -->
+                <div id="chat-messages" class="chat-style"></div>
 
-            <!-- Chat msg Sending Form -->
-            <div id="chat-send-form" class="chat-style">
-                <input id="chat-input" type="text" name="message" maxlength="2000">
-                <div id="chat-send" class="flex-center">
-                    <img src="assets/img/chat-send.svg">
+                <!-- Chat msg Sending Form -->
+                <div id="chat-send-form" class="chat-style">
+                    <input id="chat-input" type="text" name="message" maxlength="2000">
+                    <div id="chat-send" class="flex-center">
+                        <img src="assets/img/chat-send.svg">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Members data -->
+            <div id="mems-wrapper" class="app-row">
+                <div id="chat-clients" class="flex-center chat-style"></div>
+                <div id="chat-clients-count-wrapper" class="flex-center">
+                    <span id="chat-clients-count-title">Офлайн</span> <span id="chat-clients-count"></span>
                 </div>
             </div>
         </div>
