@@ -72,8 +72,7 @@ wssMessageHandlers.push({
 stages["chat"]["entry"] = function(){
     Cookies.set("wscname", nickname);
     hue = nicknameHue(nickname);
-    $("#chat-send-form, #chat-rooms")
-        .css({"filter": `hue-rotate(${hue}deg)`});
+    $("#chat-send-form").css({"filter": `hue-rotate(${hue}deg)`});
         
     // Отправка сообщений
     $("#chat-send").click(wssSendMessage);

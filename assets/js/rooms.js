@@ -38,8 +38,12 @@ wssMessageHandlers.push({
     mode: "ROOM_CHANGE_OK",
     func: function(message){
         $("#chat-messages, #chat-clients").empty();
-        $("#chat-rooms .room").removeClass("current");
-        $(`.room[rid=${message[1]}]`).addClass("current");
+        $("#chat-rooms .room")
+            .removeClass("current")
+            .attr("style", "");
+        $(`.room[rid=${message[1]}]`)
+            .addClass("current")
+            .css({"filter": `hue-rotate(${hue}deg)`});
     }
 });
 
