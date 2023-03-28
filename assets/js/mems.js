@@ -7,24 +7,24 @@ function nicknameHue(nick) {
 }
 function chatNewMem(who) {
     const elem = $("<div>");
-    elem.addClass("client")
+    elem.addClass("member")
         .attr("who", who)
         .html(who)
         .css({"filter": `hue-rotate(${nicknameHue(who)}deg)`});
-    $("#chat-clients").append(elem);
+    $("#chat-members").append(elem);
 }
 function chatDelMem(who) {
-    $(`.client[who="${who}"]`)
+    $(`.member[who="${who}"]`)
         .each((i, elem) => elem.remove());
 }
 function setChatOnlineCounter(count = "") {
     if (count === "") {
-        $("#chat-clients-count-title").html("Офлайн");
-        $("#chat-clients-count").html("");
+        $("#chat-members-count-title").html("Офлайн");
+        $("#chat-members-count").html("");
     }
     else {
-        $("#chat-clients-count-title").html("Онлайн:");
-        $("#chat-clients-count").html(count);
+        $("#chat-members-count-title").html("Онлайн:");
+        $("#chat-members-count").html(count);
     }
 }
 function setTotalOnlineCounter(count = "") {
@@ -55,8 +55,8 @@ wssMessageHandlers.push({
 wssMessageHandlers.push({
     mode: "MEMBERS",
     func: function(message){
-        message[1].forEach(client => {
-            chatNewMem(client);
+        message[1].forEach(member => {
+            chatNewMem(member);
         });
     }
 });

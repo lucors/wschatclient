@@ -36,12 +36,14 @@
     --sz-app-wrapper-wmax: 95vw;
     --sz-app-wrapper-h: 99vh;
     --sz-chat-send-form-h: 2em;
+    --sz-font-size-1: 1em;
 
     /* Secial */
     --spec-1: 0.5em;
 
 	font-family: Nunito;
 	color: var(--clr-font-1);
+    font-size: var(--sz-font-size-1);
 }
 
 
@@ -82,6 +84,10 @@ body {
     left: 0;
     background-color: var(--clr-grey-2);
 }
+#mobile-actions {
+    display: none;
+}
+
 
 /* COMMON */
 .flex-center {
@@ -98,6 +104,10 @@ body {
     /* box-shadow: inset 0em 0em var(--spec-1) var(--clr-grey-4); */
     box-shadow: 0em 0em 1em var(--clr-shadow-1);
 }
+.hide {
+    display: none !important;
+}
+
 
 /* AUTH */
 body.auth #auth-wrapper {
@@ -219,6 +229,13 @@ body.chat #app-wrapper {
     max-height: 2.5vh;
     color: var(--clr-font-error-1);
 }
+#chat-clients-count-wrapper {
+    height: 1.5em;
+    max-height: 2.5vh;
+}
+#chat-clients-count {
+    margin-left: var(--spec-1);
+}
 
 #chat-messages {
     display: flex;
@@ -308,24 +325,113 @@ body.chat #app-wrapper {
     width: auto;
 }
 
-#chat-clients {
+#chat-members {
     overflow-y: scroll;
     flex-wrap: wrap;
     min-height: 3em;
     height: auto;
     max-height: calc(90vh - 1.5em);
 }
-#chat-clients .client {
+#chat-members .member {
     border-radius: var(--spec-1);
     padding: 0.3em;
     margin: 0.3em;
     color: var(--clr-msg-who);
     background-color: var(--clr-msg-client);
 }
-#chat-clients-count-wrapper {
+#chat-members-count-wrapper {
     height: 1.5em;
     max-height: 2.5vh;
 }
-#chat-clients-count {
+#chat-members-count {
     margin-left: var(--spec-1);
+}
+
+#mobile-actions {
+    order: 0;
+    width: 100%;
+    max-width: 90vw;
+}
+#mobile-actions .action {
+    border-radius: var(--spec-1);
+    padding: 0.3em;
+    margin: 0.3em;
+    color: var(--clr-font-2);
+    background-color: var(--clr-msg-bg);
+    width: 90%;
+    text-align: center;
+    cursor: pointer;
+}
+#mobile-actions .action:hover {
+    background-color: var(--clr-scroll-thumb);
+    color: var(--clr-font-1);
+}
+
+
+/*MOBILE*/
+@media screen and (min-width: 320px) and (max-width: 768px) {
+	:root {
+        --scrollbarWidth: 1em;
+        --sz-auth-wrapper-w: 80vw;
+        --sz-auth-wrapper-wmax: 38em;
+        --sz-font-size-1: 1.3em;
+	}
+    #mobile-actions {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+    body.chat #app-wrapper {
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+    }
+    #app-wrapper #rooms-wrapper,
+    #app-wrapper #chat-wrapper,
+    #app-wrapper #mems-wrapper {
+        width: 100%;
+        max-width: 90vw;
+    }
+    #app-wrapper #rooms-wrapper {
+        order: 1;
+        display: none;
+    }
+    #app-wrapper #mems-wrapper {
+        order: 2;
+        display: none;
+    }
+    #app-wrapper #chat-wrapper {
+        order: 3;
+        height: 100%;
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+    }
+    #chat-rooms { 
+        max-height: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    #chat-members {
+        min-height: 2.6em;
+        max-height: 100%;
+    }
+
+    #app-wrapper #rooms-wrapper.active {
+        display: initial;
+        height: 100vh;
+    }
+    #app-wrapper #mems-wrapper.active {
+        display: initial;
+        height: 100vh;
+    }
+}
+
+/*LAPTOP*/
+@media screen and (min-width: 769px) and (max-width: 1240px) {
+}
+
+/*PC*/
+@media screen and (min-width: 1241px) {
 }

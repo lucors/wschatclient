@@ -2,6 +2,7 @@
     <head>
         <title>WebSocket Chat</title>
         <meta charset="utf-8" />
+        <meta name="theme-color" content="#36363c" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content='Online real-time chat built on WebSockets technology'>
         <meta name="keywords" content="websocket socket chat lucors">
@@ -18,6 +19,7 @@
         <script src="assets/js/chat.js"></script>
         <script src="assets/js/mems.js"></script>
         <script src="assets/js/rooms.js"></script>
+        <script src="assets/js/mobile.js"></script>
         <script defer src="assets/js/run.js"></script>
     </head>
 
@@ -34,9 +36,16 @@
             <div id="auth-error"></div>
         </div>
         <div id="app-wrapper">
+            <div id="mobile-actions">
+                <div id="action-rooms" class="action">Комнаты</div>
+                <div id="action-members" class="action">Участники</div>
+            </div>
             <!-- Rooms data -->
             <div id="rooms-wrapper" class="app-row">
                 <div id="chat-rooms" class="flex-center chat-style"></div>
+                <div id="chat-clients-count-wrapper" class="flex-center">
+                    <span id="chat-clients-count-title">Всего онлайн</span> <span id="chat-clients-count"></span>
+                </div>
                 <div id="chat-rooms-error" class="flex-center"></div>
             </div>
 
@@ -56,9 +65,9 @@
             
             <!-- Members data -->
             <div id="mems-wrapper" class="app-row">
-                <div id="chat-clients" class="flex-center chat-style"></div>
-                <div id="chat-clients-count-wrapper" class="flex-center">
-                    <span id="chat-clients-count-title">Офлайн</span> <span id="chat-clients-count"></span>
+                <div id="chat-members" class="flex-center chat-style"></div>
+                <div id="chat-members-count-wrapper" class="flex-center">
+                    <span id="chat-members-count-title">Офлайн</span> <span id="chat-members-count"></span>
                 </div>
             </div>
         </div>

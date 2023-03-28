@@ -37,7 +37,7 @@ wssMessageHandlers.push({
 wssMessageHandlers.push({
     mode: "ROOM_CHANGE_OK",
     func: function(message){
-        $("#chat-messages, #chat-clients").empty();
+        $("#chat-messages, #chat-members").empty();
         $("#chat-rooms .room")
             .removeClass("current")
             .attr("style", "");
