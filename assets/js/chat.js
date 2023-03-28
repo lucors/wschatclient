@@ -62,8 +62,8 @@ wssMessageHandlers.push({
     mode: "MSG",
     func: function(message){
         var type = "self";
-        if (message[1].who !== nickname) type = "outer";
-        chatPutMessage(type, message[1].msg, message[1].who);
+        if (message[1][0] !== nickname) type = "outer";
+        chatPutMessage(type, message[1][1], message[1][0]);
     }
 });
 wssMessageHandlers.push({
@@ -71,8 +71,8 @@ wssMessageHandlers.push({
     func: function(message){
         message[1].forEach(data => {
             var type = "self";
-            if (data.who !== nickname) type = "outer";
-            chatPutMessage(type, data.msg, data.who);
+            if (data[0] !== nickname) type = "outer";
+            chatPutMessage(type, data[1], data[0]);
         });
     }
 });
