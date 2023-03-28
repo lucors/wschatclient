@@ -4,6 +4,7 @@ let hue = 0;
 let socket = null;
 let wssMessageHandlers = []; //[{mode: string, func: function()},...]
 let currentStage = null;
+let pingInterval = undefined;
 let stages = {
     "auth": {
         entry: null,
@@ -102,6 +103,7 @@ function wssClose(event) {
 }
 function wssError(event) {
     $("#auth-error").html("Ошибка соединения");
+    clearInterval(pingInterval);
     console.error("Ошибка WebSocket");
     chatPutMessage("notify", "Ошибка WebSocket");
     socket.close();
@@ -128,12 +130,18 @@ function wssMessage(event) {
 }
 function wssSend(mode, data = undefined) {
     let msg = [mode];
-    if (data) msg.push(data);
+    if (data !== undefined) msg.push(data);
     if (flags.debug) console.log(`Отправка: ` + JSON.stringify(msg));
     return socket.send(JSON.stringify(msg));
 }
 
 // COMMON wssMessage HANDLERS
+wssMessageHandlers.push({
+    mode: "PING",
+    func: function(message){
+        console.log(`PING timestamp: ${message[1]}`);
+    }
+});
 wssMessageHandlers.push({
     mode: "ERROR",
     func: function(message){

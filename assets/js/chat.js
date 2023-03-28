@@ -80,6 +80,10 @@ wssMessageHandlers.push({
 
 // CHAT STAGE HANDLERS
 stages["chat"]["entry"] = function(){
+    pingInterval = setInterval(()=> {
+        wssSend("PING");
+    }, 600*1000);
+
     Cookies.set("wscname", nickname);
     hue = nicknameHue(nickname);
     $("#chat-send-form").css({"filter": `hue-rotate(${hue}deg)`});
