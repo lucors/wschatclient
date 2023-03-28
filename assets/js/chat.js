@@ -66,6 +66,16 @@ wssMessageHandlers.push({
         chatPutMessage(type, message[1].msg, message[1].who);
     }
 });
+wssMessageHandlers.push({
+    mode: "HISTORY",
+    func: function(message){
+        message[1].forEach(data => {
+            var type = "self";
+            if (data.who !== nickname) type = "outer";
+            chatPutMessage(type, data.msg, data.who);
+        });
+    }
+});
 
 
 // CHAT STAGE HANDLERS
