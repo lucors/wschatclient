@@ -426,6 +426,12 @@ body.chat #app-wrapper {
         display: initial;
         height: 100vh;
     }
+    .msg {
+        width: 70%;
+    }
+    .msg.notify {
+        width: 65%;
+    }
 }
 
 /*LAPTOP*/
