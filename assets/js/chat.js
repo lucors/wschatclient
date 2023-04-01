@@ -46,7 +46,7 @@ function wssSendMessage() {
         console.warn("Не отправляйте пустые сообщения");
         return false;
     }
-    wssSend("MSG", {msg: message});
+    wssSend("MSG", message);
     $("#chat-input").val("");
     return true;
 }

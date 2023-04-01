@@ -6,21 +6,22 @@ let wssMessageHandlers = []; //[{mode: string, func: function()},...]
 let currentStage = null;
 let pingInterval = undefined;
 let stages = {
-    "auth": {
+    auth: {
         entry: null,
         exit: null,
     },
-    "rooms": {
+    rooms: {
         entry: null,
         exit: null,
     },
-    "chat": {
+    chat: {
         entry: null,
         exit: null,
     },
 };
 let flags = {
-    debug: false
+    debug: false,
+    admin: false,
 }
 
 
@@ -51,14 +52,14 @@ function currentDatetime() {
 function setStage(stage) {
     if (!(stage in stages)) return;
     if (currentStage) {
-        if (flags.debug) console.log(`Завершение этапа: ${currentStage}`);
+        if (flags.debug) console.log(`%cЗавершение этапа: ${currentStage}`, "color: #F7AD6E");
         if (!stages[currentStage]["exit"]) {
             console.error(`Не описан обязательный обработчик для события exit, этап: ${currentStage}`);
             return;
         }
         stages[currentStage]["exit"]();
     }
-    if (flags.debug) console.log(`Начало этапа: ${stage}`);
+    if (flags.debug) console.log(`%cНачало этапа: ${stage}`, "color: #F7AD6E");
     currentStage = stage;
     $(document.body)
         .removeClass(Object.keys(stages).join(" "))
@@ -110,7 +111,7 @@ function wssError(event) {
 }
 function wssMessage(event) {
     try {
-        if (flags.debug) console.log(`Получено: ` + event.data);
+        if (flags.debug) console.log(`%cr: ` + event.data, "color: #bada55");
         const message = JSON.parse(event.data);
         _done = false;
         wssMessageHandlers.forEach(handler => {
@@ -131,7 +132,7 @@ function wssMessage(event) {
 function wssSend(mode, data = undefined) {
     let msg = [mode];
     if (data !== undefined) msg.push(data);
-    if (flags.debug) console.log(`Отправка: ` + JSON.stringify(msg));
+    if (flags.debug) console.log(`%cs: ` + JSON.stringify(msg), "color: #77DDE7");
     return socket.send(JSON.stringify(msg));
 }
 

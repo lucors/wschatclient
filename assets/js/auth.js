@@ -12,7 +12,7 @@ function wssSendName() {
         $("#auth-error").html("Введите имя");
         return;
     };
-    wssSend("AUTH", {who: nickname});
+    wssSend("AUTH", nickname);
 }
 
 // AUTH wssMessage HANDLERS
@@ -27,10 +27,23 @@ wssMessageHandlers.push({
 wssMessageHandlers.push({
     mode: "AUTH_OK",
     func: function(message){
+        flags.admin = message[1];
         setStage("chat"); 
     }
 });
-
+wssMessageHandlers.push({
+    mode: "AUTH_PASS",
+    func: function(message){
+        const pass = prompt(message[1]);
+        if (!pass) {
+            console.error("Пароль не задан");
+            nickname = "";
+            $("#auth-error").html("Пароль не задан");
+            return;
+        }
+        wssSend("AUTH_PASS", [nickname, hashCode(pass)]);
+    }
+});
 
 // AUTH STAGE HANDLERS
 stages["auth"]["entry"] = function(){
