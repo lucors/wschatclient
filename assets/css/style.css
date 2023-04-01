@@ -287,6 +287,13 @@ body.chat #app-wrapper {
     color: var(--clr-font-2);
     display: flex;
 }
+.msg.blur .msgtext {
+    filter: blur(0.4em);
+    transition: filter 0.3s;
+}
+.msg.blur:hover .msgtext {
+    filter: blur(0em);
+}
 #chat-send-form {
     position: relative;
     height: var(--sz-chat-send-form-h);
@@ -338,6 +345,9 @@ body.chat #app-wrapper {
     margin: 0.3em;
     color: var(--clr-msg-who);
     background-color: var(--clr-msg-client);
+}
+#chat-members .member.self {
+    text-decoration: underline;
 }
 #chat-members-count-wrapper {
     height: 1.5em;

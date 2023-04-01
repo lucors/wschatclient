@@ -2,11 +2,21 @@
 
 
 // CHAT UTILS
-function chatPutMessage(type, msgtext, msgwho = "") {
+function chatPutMessage(type, msgtext, msgwho = "", spec = 0) {
     const elem = $("<div>");
     elem
         .html("")
         .addClass("msg");
+    switch (spec) {
+        case 1:
+            elem.addClass("direct");
+            break;
+        case 2: 
+            elem.addClass("blur");
+            break;
+        default:
+            break;
+    }
     switch (type) {
         case "self":
             elem.css({"filter": `hue-rotate(${hue}deg)`});
@@ -36,6 +46,11 @@ function chatPutMessage(type, msgtext, msgwho = "") {
     $("#chat-messages").append(elem);
     scrollToBottom("#chat-messages");
 }
+function getMessageDir(who) {
+    var dir = "self";
+    if (who !== nickname) dir = "outer";
+    return dir;
+}
 
 
 // CHAT WEBSOCKET STUFF
@@ -46,7 +61,27 @@ function wssSendMessage() {
         console.warn("Не отправляйте пустые сообщения");
         return false;
     }
-    wssSend("MSG", message);
+
+    if (/^@blur/g.test(message)) {
+        message = message.substr(message.indexOf(' ')+1);
+        if (message === "") {
+            console.warn("Не отправляйте пустые сообщения");
+            return false;
+        }
+        wssSend("MSG_BLUR", message);
+    }
+    else if (/^@direct/g.test(message) || /^@dir/g.test(message)) {
+        let whom = message.split(" ");
+        if (whom.length < 3) {
+            console.warn("Ошибка direct отправки");
+            return false;
+        }
+        //TODO: изменить механизм определения whom и части сообщения
+        wssSend("MSG_DIRECT", [whom[1], whom.slice(2).join(" ")]);
+    }
+    else {
+        wssSend("MSG", message);
+    }
     $("#chat-input").val("");
     return true;
 }
@@ -61,18 +96,27 @@ wssMessageHandlers.push({
 wssMessageHandlers.push({
     mode: "MSG",
     func: function(message){
-        var type = "self";
-        if (message[1][0] !== nickname) type = "outer";
-        chatPutMessage(type, message[1][1], message[1][0]);
+        chatPutMessage(getMessageDir(message[1][0]), message[1][1], message[1][0]);
+    }
+});
+wssMessageHandlers.push({
+    mode: "MSG_DIRECT",
+    func: function(message){
+        const who = `${message[1][0]} => ${message[1][1]}`;
+        chatPutMessage(getMessageDir(message[1][0]), message[1][2], who, 1);
+    }
+});
+wssMessageHandlers.push({
+    mode: "MSG_BLUR",
+    func: function(message){
+        chatPutMessage(getMessageDir(message[1][0]), message[1][1], message[1][0], 2);
     }
 });
 wssMessageHandlers.push({
     mode: "HISTORY",
     func: function(message){
         message[1].forEach(data => {
-            var type = "self";
-            if (data[0] !== nickname) type = "outer";
-            chatPutMessage(type, data[1], data[0]);
+            chatPutMessage(getMessageDir(data[0]), data[1], data[0]);
         });
     }
 });

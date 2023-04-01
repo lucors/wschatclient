@@ -11,6 +11,7 @@ function chatNewMem(who) {
         .attr("who", who)
         .html(who)
         .css({"filter": `hue-rotate(${nicknameHue(who)}deg)`});
+    if (who === nickname) elem.addClass("self");
     $("#chat-members").append(elem);
 }
 function chatDelMem(who) {
