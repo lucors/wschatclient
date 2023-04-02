@@ -2,12 +2,12 @@
 
 
 // CHAT UTILS
-function chatPutMessage(type, msgtext, msgwho = "", spec = 0) {
+function chatPutMessage(type, text, options = {}) {
     const elem = $("<div>");
     elem
         .html("")
         .addClass("msg");
-    switch (spec) {
+    switch (options.spec) {
         case 1:
             elem.addClass("direct");
             break;
@@ -22,8 +22,10 @@ function chatPutMessage(type, msgtext, msgwho = "", spec = 0) {
             elem.css({"filter": `hue-rotate(${hue}deg)`});
             break;
         case "outer": 
+            if (options.who) {
+                elem.css({"filter": `hue-rotate(${nicknameHue(options.who)}deg)`})
+            }
             elem
-                .css({"filter": `hue-rotate(${nicknameHue(msgwho)}deg)`})
                 .addClass("outer");
             break;
         case "notify":
@@ -33,16 +35,16 @@ function chatPutMessage(type, msgtext, msgwho = "", spec = 0) {
             break;
     }
 
-    if (msgwho !== "") {
+    if (options.title) {
         let msgtitle = `<div class="msgtitle">`
-        msgtitle += `<div class="msgwho">${msgwho}</div>`;
+        msgtitle += `<div class="msgwho">${options.title}</div>`;
         if (type !== "notify") {
             msgtitle += `<div class="msgtime">${currentDatetime()}</div>`;
         }
         msgtitle += `</div>`;
         elem.html(msgtitle);
     }
-    elem.html(elem.html() + `<div class="msgtext">${msgtext}</div>`);
+    elem.html(elem.html() + `<div class="msgtext">${text}</div>`);
     $("#chat-messages").append(elem);
     scrollToBottom("#chat-messages");
 }
@@ -85,6 +87,17 @@ function wssSendMessage() {
     $("#chat-input").val("");
     return true;
 }
+function broadcastr(msg, rid=undefined) {
+    if (!msg) return;
+    if (rid === undefined) {
+        return wssSend("BROADCAST_R", msg);
+    }
+    wssSend("BROADCAST_R", [rid, msg]);
+}
+function broadcast(msg) {
+    if (!msg) return;
+    wssSend("BROADCAST", msg);
+}
 
 // CHAT wssMessage HANDLERS
 wssMessageHandlers.push({
@@ -96,27 +109,40 @@ wssMessageHandlers.push({
 wssMessageHandlers.push({
     mode: "MSG",
     func: function(message){
-        chatPutMessage(getMessageDir(message[1][0]), message[1][1], message[1][0]);
+        chatPutMessage(getMessageDir(message[1][0]), message[1][1], {
+            title:  message[1][0],
+            who:    message[1][0],
+        });
     }
 });
 wssMessageHandlers.push({
     mode: "MSG_DIRECT",
     func: function(message){
-        const who = `${message[1][0]} => ${message[1][1]}`;
-        chatPutMessage(getMessageDir(message[1][0]), message[1][2], who, 1);
+        chatPutMessage(getMessageDir(message[1][0]), message[1][2], {
+            title:  `${message[1][0]} => ${message[1][1]}`,
+            who:    message[1][0],
+            spec:   1,
+        });
     }
 });
 wssMessageHandlers.push({
     mode: "MSG_BLUR",
     func: function(message){
-        chatPutMessage(getMessageDir(message[1][0]), message[1][1], message[1][0], 2);
+        chatPutMessage(getMessageDir(message[1][0]), message[1][1], {
+            title:  message[1][0],
+            who:    message[1][0],
+            spec:   2,
+        });
     }
 });
 wssMessageHandlers.push({
     mode: "HISTORY",
     func: function(message){
         message[1].forEach(data => {
-            chatPutMessage(getMessageDir(data[0]), data[1], data[0]);
+            chatPutMessage(getMessageDir(data[0]), data[1], {
+                title:  data[0],
+                who:    data[0],
+            });
         });
     }
 });
@@ -135,7 +161,11 @@ stages["chat"]["entry"] = function(){
     // Отправка сообщений
     $("#chat-send").click(wssSendMessage);
     $("#chat-input").on("keydown", function(e) {
-        if (e.key === "Enter") return wssSendMessage();
+        switch (e.key) {
+            case "Enter":
+                return wssSendMessage();
+            default: break;
+        }
     });
 
     // Выбор комнаты

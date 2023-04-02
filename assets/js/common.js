@@ -90,8 +90,15 @@ function wssOpen() {
     $("#auth-send").click(wssSendName);
     $(document.body).on("keydown", function (e) {
         if (!$(document.body).hasClass("auth")) return;
-        if (e.key === "Enter") return wssSendName();
-        $("#auth-input").focus();
+        switch (e.key) {
+            case ' ': 
+                e.preventDefault();
+                return;
+            case "Enter":
+                return wssSendName();
+            default:
+                $("#auth-input").focus();
+        }
     });
 }
 function wssClose(event) {

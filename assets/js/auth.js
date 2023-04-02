@@ -8,10 +8,14 @@
 function wssSendName() {
     nickname = $("#auth-input").val();
     nickname = nickname.slice(0, 50);
-    if (nickname === "") {
+    if (nickname.indexOf(' ') >= 0) {
+        $("#auth-error").html("Не используйте пробел в имени");
+        return;
+    }
+    if (!nickname) {
         $("#auth-error").html("Введите имя");
         return;
-    };
+    }
     wssSend("AUTH", nickname);
 }
 
