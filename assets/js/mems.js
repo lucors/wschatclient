@@ -5,17 +5,17 @@
 function nicknameHue(nick) {
     return (hashCode(nick) + 318) % 360;
 }
-function chatNewMem(who) {
+function chatNewMem(who, root = "#chat-members") {
     const elem = $("<div>");
     elem.addClass("member")
         .attr("who", who)
         .html(who)
         .css({"filter": `hue-rotate(${nicknameHue(who)}deg)`});
     if (who === nickname) elem.addClass("self");
-    $("#chat-members").append(elem);
+    $(root).append(elem);
 }
-function chatDelMem(who) {
-    $(`.member[who="${who}"]`)
+function chatDelMem(who, root = "#chat-members") {
+    $(`${root} .member[who="${who}"]`)
         .each((i, elem) => elem.remove());
 }
 function setChatOnlineCounter(count = "") {
@@ -80,5 +80,34 @@ wssMessageHandlers.push({
         `; 
         chatNewMem(message[1]);
         chatPutMessage("notify", newMemMsg);
+    }
+});
+
+
+wssMessageHandlers.push({
+    mode: "CLIENTS",
+    func: function(message){
+        message[1].forEach(member => {
+            chatNewMem(member, "#chat-clients");
+        });
+    }
+});
+wssMessageHandlers.push({
+    mode: "DEL_CLI",
+    func: function(message){
+        chatDelMem(message[1], "#chat-clients");
+    }
+});
+wssMessageHandlers.push({
+    mode: "NEW_CLI",
+    func: function(message){
+        const newMemMsg = `
+        <div 
+        class="msgwho" 
+        style="filter: hue-rotate(${nicknameHue(message[1])}deg);"
+        >
+        ${message[1]}</div> подключился
+        `; 
+        chatNewMem(message[1], "#chat-clients");
     }
 });

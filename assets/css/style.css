@@ -332,6 +332,7 @@ body.chat #app-wrapper {
     width: auto;
 }
 
+#chat-clients,
 #chat-members {
     overflow-y: scroll;
     flex-wrap: wrap;
@@ -339,6 +340,7 @@ body.chat #app-wrapper {
     height: auto;
     max-height: calc(90vh - 1.5em);
 }
+#chat-clients .member,
 #chat-members .member {
     border-radius: var(--spec-1);
     padding: 0.3em;
@@ -346,6 +348,7 @@ body.chat #app-wrapper {
     color: var(--clr-msg-who);
     background-color: var(--clr-msg-client);
 }
+#chat-clients .member.self,
 #chat-members .member.self {
     text-decoration: underline;
 }
@@ -423,6 +426,7 @@ body.chat #app-wrapper {
         flex-direction: row;
         flex-wrap: wrap;
     }
+    #chat-clients,
     #chat-members {
         min-height: 2.6em;
         max-height: 100%;

@@ -157,6 +157,7 @@ stages["chat"]["entry"] = function(){
     Cookies.set("wscname", nickname);
     hue = nicknameHue(nickname);
     $("#chat-send-form").css({"filter": `hue-rotate(${hue}deg)`});
+    if (flags.admin) $("#chat-clients").removeClass("hide");
         
     // Отправка сообщений
     $("#chat-send").click(wssSendMessage);
