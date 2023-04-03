@@ -206,7 +206,7 @@ wssMessageHandlers.push({
 stages["chat"]["entry"] = function(){
     pingInterval = setInterval(()=> {
         wssSend("PING");
-    }, 600*1000);
+    }, 30*1000);
 
     Cookies.set("wscname", nickname);
     hue = nicknameHue(nickname);
