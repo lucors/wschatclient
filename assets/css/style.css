@@ -255,7 +255,7 @@ body.chat #app-wrapper {
     padding: 0.4em var(--spec-1);
     align-self: flex-end;
     width: 51%;
-    word-break: break-all;
+    word-break: break-word;
 }
 .msg.server {
     align-self: flex-start;
