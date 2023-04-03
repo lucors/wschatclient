@@ -254,7 +254,7 @@ body.chat #app-wrapper {
     border-radius: var(--spec-1);
     padding: 0.4em var(--spec-1);
     align-self: flex-end;
-    width: 40%;
+    width: 51%;
     word-break: break-all;
 }
 .msg.server {
