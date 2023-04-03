@@ -129,7 +129,7 @@ function wssSendMessage() {
             @direct <user> <text> -- отправить личное сообщение;<br>
             @help -- показать эту справку.  
         `;
-        chatPutMessage("self", helpText, {title: "Справка"});
+        chatPutMessage("server", helpText, {title: "Справка"});
     }
     else if (/^@blur/g.test(message)) {
         message = message.substr(message.indexOf(' ')+1);
