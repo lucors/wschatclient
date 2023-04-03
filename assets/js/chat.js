@@ -87,25 +87,31 @@ function generateHint(text) {
     hint("");
     const hinte = $("#chat-input-hint");
 
-    if (/^@b.*/g.test(text) && !(/^@blur .*/g.test(text))) {
+
+    let reg = new RegExp(`^${text}`, 'g');
+    if (reg.test("@blur")) {
         return hint("@blur ");
     }
-    else if (/^@d.*/g.test(text) && !(/^@direct .*/g.test(text))) {
+    if (reg.test("@direct")) {
         return hint("@direct ");
     }
-    //Пользователи
     const lastw = text.split(" ").at(-1);
     if (!lastw) return;
-    $(".member").each((i, v) => {
-        const reg = new RegExp(`^${lastw}`, 'g');
-        if (reg.test(v.innerHTML)) {
-            const lastspace = text.lastIndexOf(" ");
-            if (lastspace < 0){
-                return hint(v.innerHTML);
+    //Пользователи
+    $.map($(".member"), function(e){return e.innerHTML})
+        .sort()
+        .some((v) => {
+            reg = new RegExp(`^${lastw}`, 'g');
+            if (reg.test(v)) {
+                const lastspace = text.lastIndexOf(" ");
+                if (lastspace < 0){
+                    hint(v);
+                    return true;
+                }
+                hint(text.slice(0, text.lastIndexOf(" ")+1) + v);
+                return true;
             }
-            return hint(text.slice(0, text.lastIndexOf(" ")+1) + v.innerHTML);
-        }
-    });
+        });
 }
 
 
