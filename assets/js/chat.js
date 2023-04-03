@@ -25,8 +25,10 @@ function chatPutMessage(type, text, options = {}) {
             if (options.who) {
                 elem.css({"filter": `hue-rotate(${nicknameHue(options.who)}deg)`})
             }
-            elem
-                .addClass("outer");
+            elem.addClass("outer");
+            break;
+        case "server": 
+            elem.addClass("server");
             break;
         case "notify":
             elem.addClass("notify");
@@ -49,9 +51,9 @@ function chatPutMessage(type, text, options = {}) {
     scrollToBottom("#chat-messages");
 }
 function getMessageDir(who) {
-    var dir = "self";
-    if (who !== nickname) dir = "outer";
-    return dir;
+    if (who === "Сервер") return "server";
+    if (who === nickname) return "self";
+    return "outer";
 }
 function chatInputDownHandler(e) {
     switch (e.key) {
@@ -88,12 +90,9 @@ function generateHint(text) {
     if (!text) return;
 
     let reg = new RegExp(`^${text}`, 'g');
-    if (reg.test("@blur")) {
-        return hint("@blur ");
-    }
-    if (reg.test("@direct")) {
-        return hint("@direct ");
-    }
+    if (reg.test("@help")) return hint("@help");
+    if (reg.test("@blur")) return hint("@blur ");
+    if (reg.test("@direct")) return hint("@direct ");
     const lastw = text.split(" ").at(-1);
     if (!lastw) return;
     //Пользователи
@@ -123,7 +122,16 @@ function wssSendMessage() {
         return false;
     }
 
-    if (/^@blur/g.test(message)) {
+    if (/^@help/g.test(message)) {
+        const helpText = `
+            Доступны следующие команды:<br>
+            @blur <text> -- отправить размытое сообщение;<br>
+            @direct <user> <text> -- отправить личное сообщение;<br>
+            @help -- показать эту справку.  
+        `;
+        chatPutMessage("self", helpText, {title: "Справка"});
+    }
+    else if (/^@blur/g.test(message)) {
         message = message.substr(message.indexOf(' ')+1);
         if (message === "") {
             console.warn("Не отправляйте пустые сообщения");
@@ -131,7 +139,7 @@ function wssSendMessage() {
         }
         wssSend("MSG_BLUR", message);
     }
-    else if (/^@direct/g.test(message) || /^@dir/g.test(message)) {
+    else if (/^@direct/g.test(message)) {
         let whom = message.split(" ");
         if (whom.length < 3) {
             console.warn("Ошибка direct отправки");

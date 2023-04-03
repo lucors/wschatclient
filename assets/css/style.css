@@ -257,6 +257,9 @@ body.chat #app-wrapper {
     width: 40%;
     word-break: break-all;
 }
+.msg.server {
+    align-self: flex-start;
+}
 .msg.outer {
     background-color: var(--clr-msg-client);
     align-self: flex-start;
