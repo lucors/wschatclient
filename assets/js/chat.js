@@ -53,6 +53,60 @@ function getMessageDir(who) {
     if (who !== nickname) dir = "outer";
     return dir;
 }
+function chatInputDownHandler(e) {
+    switch (e.key) {
+        case "Enter":
+            return wssSendMessage();
+        case "Tab":
+            const hinte = $("#chat-input-hint");
+            if (hinte.val()) {
+                $(this).val(hinte.val());
+                hinte.val("");
+            }
+            e.preventDefault();
+            $(this).focus();
+            return;
+        default: 
+            break;
+    }
+}
+function chatInputUpHandler(e) {
+    switch (e.key) {
+        default: 
+            generateHint($(this).val());
+            break;
+    }
+}
+function hint(val = undefined) {
+    if (val === undefined) {
+        return $("#chat-input-hint").val();
+    }
+    return $("#chat-input-hint").val(val);
+}
+function generateHint(text) {
+    hint("");
+    const hinte = $("#chat-input-hint");
+
+    if (/^@b.*/g.test(text) && !(/^@blur .*/g.test(text))) {
+        return hint("@blur ");
+    }
+    else if (/^@d.*/g.test(text) && !(/^@direct .*/g.test(text))) {
+        return hint("@direct ");
+    }
+    //Пользователи
+    const lastw = text.split(" ").at(-1);
+    if (!lastw) return;
+    $(".member").each((i, v) => {
+        const reg = new RegExp(`^${lastw}`, 'g');
+        if (reg.test(v.innerHTML)) {
+            const lastspace = text.lastIndexOf(" ");
+            if (lastspace < 0){
+                return hint(v.innerHTML);
+            }
+            return hint(text.slice(0, text.lastIndexOf(" ")+1) + v.innerHTML);
+        }
+    });
+}
 
 
 // CHAT WEBSOCKET STUFF
@@ -161,13 +215,8 @@ stages["chat"]["entry"] = function(){
         
     // Отправка сообщений
     $("#chat-send").click(wssSendMessage);
-    $("#chat-input").on("keydown", function(e) {
-        switch (e.key) {
-            case "Enter":
-                return wssSendMessage();
-            default: break;
-        }
-    });
+    $("#chat-input").on("keydown", chatInputDownHandler);
+    $("#chat-input").on("keyup", chatInputUpHandler);
 
     // Выбор комнаты
     $("#chat-rooms .room").click(changeRoom);
