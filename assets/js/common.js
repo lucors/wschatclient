@@ -120,12 +120,10 @@ function wssMessage(event) {
     try {
         if (flags.debug) console.log(`%cr: ` + event.data, "color: #bada55");
         const message = JSON.parse(event.data);
-        _done = false;
-        wssMessageHandlers.forEach(handler => {
+        const _done = wssMessageHandlers.some(handler => {
             if (handler.mode == message[0]) {
                 handler.func(message);
-                _done = true;
-                return;
+                return true;
             }
         });
         if (!_done) {

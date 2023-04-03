@@ -85,8 +85,7 @@ function hint(val = undefined) {
 }
 function generateHint(text) {
     hint("");
-    const hinte = $("#chat-input-hint");
-
+    if (!text) return;
 
     let reg = new RegExp(`^${text}`, 'g');
     if (reg.test("@blur")) {
@@ -198,10 +197,17 @@ wssMessageHandlers.push({
 wssMessageHandlers.push({
     mode: "HISTORY",
     func: function(message){
-        message[1].forEach(data => {
+        message[1].msg.forEach(data => {
             chatPutMessage(getMessageDir(data[0]), data[1], {
                 title:  data[0],
                 who:    data[0],
+            });
+        });
+        message[1].blur.forEach(data => {
+            chatPutMessage(getMessageDir(data[0]), data[1], {
+                title:  data[0],
+                who:    data[0],
+                spec:   2,
             });
         });
     }
