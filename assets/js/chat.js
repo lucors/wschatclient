@@ -1,5 +1,6 @@
 // CHAT VARIABLES
-
+const chatCommandsHandlers = []; //[{command: string, func: function()},...]
+const _commands = [];
 
 // CHAT UTILS
 function chatPutMessage(type, text, options = {}) {
@@ -89,14 +90,21 @@ function generateHint(text) {
     hint("");
     if (!text) return;
 
-    let reg = new RegExp(`^${text}`, 'g');
-    if (reg.test("@help")) return hint("@help");
-    if (reg.test("@blur")) return hint("@blur ");
-    if (reg.test("@direct")) return hint("@direct ");
     const lastw = text.split(" ").at(-1);
     if (!lastw) return;
+    let reg = new RegExp(`^${lastw}`, 'g');
+
+    const _commHint = chatCommandsHandlers.some((handler) => {
+        if (reg.test(handler.command)) {
+            if (!handler.admin || (handler.admin && flags.admin)) {
+                hint(`${handler.command} `);
+                return true;
+            } 
+        }
+    });
+    if (_commHint) return;
     //Пользователи
-    $.map($(".member"), function(e){return e.innerHTML})
+    $.map($("#chat-members .member"), function(e){return e.innerHTML})
         .sort()
         .some((v) => {
             reg = new RegExp(`^${lastw}`, 'g');
@@ -122,33 +130,14 @@ function wssSendMessage() {
         return false;
     }
 
-    if (/^@help/g.test(message)) {
-        const helpText = `
-            Доступны следующие команды:<br>
-            @blur <text> -- отправить размытое сообщение;<br>
-            @direct <user> <text> -- отправить личное сообщение;<br>
-            @help -- показать эту справку.  
-        `;
-        chatPutMessage("server", helpText, {title: "Справка"});
-    }
-    else if (/^@blur/g.test(message)) {
-        message = message.substr(message.indexOf(' ')+1);
-        if (message === "") {
-            console.warn("Не отправляйте пустые сообщения");
-            return false;
+    const _comm = chatCommandsHandlers.some((handler) => {
+        const reg = new RegExp(`^${handler.command}`, 'g');
+        if (reg.test(message)) {
+            handler.func(message);
+            return true;
         }
-        wssSend("MSG_BLUR", message);
-    }
-    else if (/^@direct/g.test(message)) {
-        let whom = message.split(" ");
-        if (whom.length < 3) {
-            console.warn("Ошибка direct отправки");
-            return false;
-        }
-        //TODO: изменить механизм определения whom и части сообщения
-        wssSend("MSG_DIRECT", [whom[1], whom.slice(2).join(" ")]);
-    }
-    else {
+    });
+    if (!_comm){
         wssSend("MSG", message);
     }
     $("#chat-input").val("");
@@ -228,6 +217,9 @@ stages["chat"]["entry"] = function(){
         wssSend("PING");
     }, 30*1000);
 
+    chatCommandsHandlers.forEach((handler) => {
+        _commands.push(handler.command);
+    });
     Cookies.set("wscname", nickname);
     hue = nicknameHue(nickname);
     $("#chat-send-form").css({"filter": `hue-rotate(${hue}deg)`});
