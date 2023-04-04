@@ -397,11 +397,14 @@ body.chat #app-wrapper {
         --sz-auth-wrapper-w: 80vw;
         --sz-auth-wrapper-wmax: 38em;
         --sz-font-size-1: 1.3em;
+        --sz-app-wrapper-w: 100vw;
+        --sz-app-wrapper-wmax: 1000vw;
 	}
     #mobile-actions {
         display: flex;
         justify-content: space-evenly;
         align-items: center;
+        max-width: 96vw;
     }
     body.chat #app-wrapper {
         justify-content: flex-start;
@@ -413,7 +416,7 @@ body.chat #app-wrapper {
     #app-wrapper #chat-wrapper,
     #app-wrapper #mems-wrapper {
         width: 100%;
-        max-width: 90vw;
+        max-width: 96vw;
     }
     #app-wrapper #rooms-wrapper {
         order: 1;
