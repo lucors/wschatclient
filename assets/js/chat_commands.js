@@ -15,6 +15,7 @@ chatCommandsHandlers.push({
             @rnotify &lt;text&gt; — <i>отправить уведомление в этот канал;</i><br>
             @server &lt;text&gt; — <i>отправить сообщение от лица сервера;</i><br>
             @reconfig — <i>перезагрузить конфигурацию на сервере;</i><br>
+            @kick — <i>кикнуть пользователя;</i><br>
             `;
         }
         helpText += ` @help — <i>показать эту справку.</i>`;
@@ -40,6 +41,12 @@ chatCommandsHandlers.push({
         let whom = message.split(" ");
         if (whom.length < 3) {
             console.warn("Ошибка direct отправки");
+            return false;
+        }
+        const correctMember = $.map($("#chat-members .member"), function(e){return e.innerHTML})
+            .includes(whom[1]);
+        if (!correctMember) {
+            console.warn("Ошибка direct отправки, пользователь не определен");
             return false;
         }
         //TODO: изменить механизм определения whom и части сообщения
@@ -87,5 +94,26 @@ chatCommandsHandlers.push({
     admin: true,
     func: function(message){
         wssSend("RELOAD_CONFIG");
+        chatPutMessage("server", "Ожидайте завершение конфигурации", {
+            title: "Конфигурация"
+        });
+    }
+});
+chatCommandsHandlers.push({
+    command: "@kick",
+    admin: true,
+    func: function(message){
+        let whom = message.split(" ");
+        if (whom.length < 2) {
+            console.warn("Ошибка kick");
+            return false;
+        }
+        const correctMember = $.map($("#chat-clients .member"), function(e){return e.innerHTML})
+            .includes(whom[1]);
+        if (!correctMember) {
+            console.warn("Ошибка kick, пользователь не определен");
+            return false;
+        }
+        wssSend("KICK", whom[1]);
     }
 });

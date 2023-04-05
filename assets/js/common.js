@@ -105,13 +105,13 @@ function wssClose(event) {
     if ($("#auth-error").html() !== "Ошибка соединения"){
         $("#auth-error").html("Соединение закрыто. Обновите страницу");
     }
+    clearInterval(pingInterval);
     console.warn("Соединение закрыто");
     chatPutMessage("notify", "Соединение закрыто");
     setTotalOnlineCounter();
 }
 function wssError(event) {
     $("#auth-error").html("Ошибка соединения");
-    clearInterval(pingInterval);
     console.error("Ошибка WebSocket");
     chatPutMessage("notify", "Ошибка WebSocket");
     socket.close();

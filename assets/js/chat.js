@@ -104,7 +104,11 @@ function generateHint(text) {
     });
     if (_commHint) return;
     //Пользователи
-    $.map($("#chat-members .member"), function(e){return e.innerHTML})
+    let membersSelector = "#chat-members .member";
+    if (flags.admin) {
+        membersSelector = "#chat-clients .member";
+    }
+    $.map($(membersSelector), function(e){return e.innerHTML})
         .sort()
         .some((v) => {
             reg = new RegExp(`^${lastw}`, 'g');
@@ -194,22 +198,31 @@ wssMessageHandlers.push({
 wssMessageHandlers.push({
     mode: "HISTORY",
     func: function(message){
-        message[1].msg.forEach(data => {
-            chatPutMessage(getMessageDir(data[0]), data[1], {
-                title:  data[0],
-                who:    data[0],
-            });
-        });
-        message[1].blur.forEach(data => {
-            chatPutMessage(getMessageDir(data[0]), data[1], {
-                title:  data[0],
-                who:    data[0],
-                spec:   2,
-            });
+        message[1].forEach(data => {
+            if (data[0] === "MSG") {
+                chatPutMessage(getMessageDir(data[1][0]), data[1][1], {
+                    title:  data[1][0],
+                    who:    data[1][0],
+                });
+            }
+            else if (data[0] === "MSG_BLUR") {
+                chatPutMessage(getMessageDir(data[1][0]), data[1][1], {
+                    title:  data[1][0],
+                    who:    data[1][0],
+                    spec:   2,
+                });
+            }
         });
     }
 });
-
+wssMessageHandlers.push({
+    mode: "RELOAD_CONFIG_DONE",
+    func: function(message){
+        chatPutMessage("server", "Конфигурация завершена", {
+            title: "Конфигурация"
+        });
+    }
+});
 
 // CHAT STAGE HANDLERS
 stages["chat"]["entry"] = function(){
