@@ -82,6 +82,25 @@ wssMessageHandlers.push({
         chatPutMessage("notify", newMemMsg);
     }
 });
+wssMessageHandlers.push({
+    mode: "KICK",
+    func: function(message){
+        let msg = `
+        <div 
+        class="msgwho" 
+        style="filter: hue-rotate(${nicknameHue(message[1])}deg);"
+        >${message[1]}
+        </div> исключен
+        `; 
+        if (message[1] === nickname) {
+            msg = "Вас исключили из чата.<br>Перезагрузите страницу.";
+            console.warn("Вас исключили из чата. Перезагрузите страницу.");
+            socket.close();
+            $(".member, .room").remove();
+        }
+        chatPutMessage("notify", msg);
+    }
+});
 
 
 wssMessageHandlers.push({

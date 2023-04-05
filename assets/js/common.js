@@ -109,6 +109,7 @@ function wssClose(event) {
     console.warn("Соединение закрыто");
     chatPutMessage("notify", "Соединение закрыто");
     setTotalOnlineCounter();
+    setChatOnlineCounter();
 }
 function wssError(event) {
     $("#auth-error").html("Ошибка соединения");
