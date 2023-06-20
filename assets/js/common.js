@@ -74,12 +74,11 @@ function setStage(stage) {
 
 // COMMON WEBSOCKET STUFF
 function wssConnect() {
+    let socketHost = `wss://${window.location.host}/wschatserver/`;
     if (flags.debug){
-        socket = new WebSocket("ws://127.0.0.1:9000");
+        socketHost = `ws://localhost:9000/`;
     }
-    else {
-        socket = new WebSocket("wss://lucors.ru/wschatserver/");
-    }
+    socket = new WebSocket(socketHost);
     //Обработчики сокета
     socket.onopen = wssOpen;
     socket.onclose = wssClose;
